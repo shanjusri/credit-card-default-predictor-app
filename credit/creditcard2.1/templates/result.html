@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="result-header">
+    <a href="/dashboard" class="btn btn-outline"><i class="fa-solid fa-arrow-left"></i> Back to Dashboard</a>
+    <h2>Prediction Result</h2>
+</div>
+
+<div class="dashboard-grid">
+    <div class="card glass-card result-card {% if prediction == 'High Risk' %}high-risk{% else %}low-risk{% endif %}">
+        <div class="status-indicator"></div>
+        <div class="card-body text-center">
+            <h5 class="text-uppercase text-muted">Client ID: {{ client_id }}</h5>
+            <h1 class="display-risk">{{ prediction }}</h1>
+
+            <div class="prob-circle-container mt-4">
+                <div class="prob-circle">
+                    <span class="prob-value">{{ probability }}%</span>
+                </div>
+                <p class="mt-2 text-sm text-muted">Probability of default next month</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="card glass-card chart-card">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-gauge-high"></i> Risk Gauge</h3>
+            <p>Visual confidence overview</p>
+        </div>
+        <div class="card-body text-center">
+            <div class="chart-container" style="position: relative; width: 100%; height: 260px; max-width: 420px; margin: 0 auto;">
+                <canvas id="riskGauge"></canvas>
+            </div>
+            <a href="/dashboard" class="btn btn-primary mt-4">Make Another Prediction</a>
+        </div>
+    </div>
+</div>
+
+<script>
+const riskValue = Number('{{ probability }}');
+
+function renderRiskGauge() {
+    const ctx = document.getElementById('riskGauge');
+    if (!ctx || !window.Chart) {
+        return;
+    }
+
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [riskValue, Math.max(0, 100 - riskValue)],
+                backgroundColor: ['#ef4444', '#22c55e'],
+                borderWidth: 0
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            rotation: -90,
+            circumference: 180,
+            cutout: '72%',
+            plugins: {
+                tooltip: { enabled: false },
+                legend: { display: false }
+            }
+        }
+    });
+}
+
+if (window.runWhenChartsReady) {
+    runWhenChartsReady(renderRiskGauge);
+} else {
+    renderRiskGauge();
+}
+</script>
+
+{% endblock %}

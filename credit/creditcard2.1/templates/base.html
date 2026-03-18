@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0f2027">
+    <title>Credit Card Predictor by Team Vajra</title>
+    <style>
+        html, body {
+            min-height: 100%;
+            background: #0f2027;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+        }
+
+        body {
+            margin: 0;
+            opacity: 0;
+            animation: pageFadeIn 0.3s ease-in forwards;
+        }
+
+        @keyframes pageFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Main Style -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+        <div id="particles-js"></div>
+
+        <script src="https://cdn.jsdelivr.net/npm/particles.js"></script>
+        <script>
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 60 },
+                color: { value: "#4f9cff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5 },
+                size: { value: 3 },
+                move: { enable: true, speed: 1 }
+            }
+        });
+        </script>
+    <div class="animated-bg"></div>
+    <div class="glass-sidebar">
+        <div class="logo">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h2>Team Vajra</h2>
+        </div>
+        <ul class="nav">
+            <li><a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}"><i class="fa-solid fa-house"></i> Dashboard</a></li>
+            <li><a href="{{ url_for('analytics') }}" class="nav-link {% if request.endpoint == 'analytics' %}active{% endif %}"><i class="fa-solid fa-chart-line"></i> Analytics</a></li>
+            <li><a href="{{ url_for('settings') }}" class="nav-link {% if request.endpoint == 'settings' %}active{% endif %}"><i class="fa-solid fa-gear"></i> Settings</a></li>
+        </ul>
+        <div class="credit">Built for ML Professional</div>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <div class="header-title">
+                <h1>Credit Card Predictor by Team Vajra</h1>
+                <p>Advanced Machine Learning AI for Financial Stability</p>
+            </div>
+            <div class="user-profile">
+                <i class="fa-solid fa-user-circle"></i>
+            </div>
+        </header>
+
+        <div class="container" id="content">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                <div class="flash-container">
+                {% for category, message in messages %}
+                  <div class="flash {{ category }}"><i class="fa-solid fa-circle-exclamation"></i> {{ message }}</div>
+                {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

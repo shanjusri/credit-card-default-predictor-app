@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="result-header">
+    <div class="header-title mb-4">
+        <h2>Analytics Overview</h2>
+        <p class="text-muted">Model performance and risk statistics</p>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <div class="card glass-card grid-col-2">
+        <div class="card-header">
+            <h3><i class="fa-solid fa-chart-pie"></i> Risk Distribution</h3>
+        </div>
+        <div class="card-body">
+            <div class="stats-grid mb-4">
+                <div class="stat-box">
+                    <div class="stat-info">
+                        <h5>Total Predictions</h5>
+                        <h2>{{ stats.total_predictions }}</h2>
+                    </div>
+                </div>
+                <div class="stat-box danger-bg">
+                    <div class="stat-info">
+                        <h5>High Risk Count</h5>
+                        <h2 class="text-danger">{{ stats.high_risk }}</h2>
+                    </div>
+                </div>
+                <div class="stat-box success-bg">
+                    <div class="stat-info">
+                        <h5>Low Risk Count</h5>
+                        <h2 class="text-success">{{ stats.low_risk }}</h2>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="chart-container mt-4" style="position: relative; height:350px; width:100%">
+                <canvas id="riskDistributionChart"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    runWhenChartsReady(function() {
+        const ctx = document.getElementById('riskDistributionChart');
+        if (!ctx) return;
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['High Risk', 'Low Risk'],
+                datasets: [{
+                    label: 'Number of Clients',
+                    data: [{{ stats.high_risk }}, {{ stats.low_risk }}],
+                    backgroundColor: ['rgba(239, 68, 68, 0.8)', 'rgba(16, 185, 129, 0.8)'],
+                    borderColor: ['#ef4444', '#10b981'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true, grid: { color: '#2a3143' } },
+                    x: { grid: { display: false } }
+                },
+                plugins: { legend: { display: false } }
+            }
+        });
+    });
+</script>
+{% endblock %}
